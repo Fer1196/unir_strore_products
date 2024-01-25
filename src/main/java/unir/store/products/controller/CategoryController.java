@@ -1,14 +1,12 @@
 package unir.store.products.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import unir.store.products.dto.CategoryDTO;
 import unir.store.products.entity.Category;
@@ -40,5 +38,37 @@ public class CategoryController {
                 response.setData(this.categoryService.createCategory(request));
                 return response;
         }
+
+        @GetMapping(path="/id/{idCategory}")
+        public Optional<Category> getCategoryById(@PathVariable String idCategory) throws GenericException {
+                return this.categoryService.getCategoryById(idCategory);
+        }
+
+        @GetMapping(path="/name/{nameCategory}")
+        public List<Category> getCategoryByName(@PathVariable String nameCategory) throws GenericException {
+                return this.categoryService.getCategoryByName(nameCategory);
+        }
+        @DeleteMapping("/id/{idCategory}")
+        public ResponseEntity<Void> removeCategoryById(@PathVariable String idCategory) throws GenericException {
+                Boolean removed = this.categoryService.removeCategoryById(idCategory);
+                if (Boolean.TRUE.equals(removed)) {
+                        return ResponseEntity.ok().build();
+                } else {
+                        return ResponseEntity.notFound().build();
+                }
+        }
+
+        @DeleteMapping("/name/{nameCategory}")
+        public ResponseEntity<Void> removeCategoryByName(@PathVariable String nameCategory) throws GenericException {
+                Boolean removed = this.categoryService.removeCategoryByName(nameCategory);
+                if (Boolean.TRUE.equals(removed)) {
+                        return ResponseEntity.ok().build();
+                } else {
+                        return ResponseEntity.notFound().build();
+                }
+        }
+
+
+
 
 }

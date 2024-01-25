@@ -1,5 +1,6 @@
 package unir.store.products.service.impl;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -46,4 +47,45 @@ public class CategoryImpl implements ICategoryService {
 
         }
 
+        public Optional<Category> getCategoryById(String idCategory) throws GenericException {
+                try {
+                        Long categoryId=Long.valueOf(idCategory);
+                        return this.categoryRepository.findById(categoryId);
+                } catch (Exception e) {
+                        throw new GenericException(e.getMessage(), null);
+                }
+        }
+
+        public List<Category> getCategoryByName(String name) throws GenericException {
+                try {
+
+                        return this.categoryRepository.findByName(name);
+                } catch (Exception e) {
+                        throw new GenericException(e.getMessage(), null);
+                }
+        }
+
+        public Boolean removeCategoryById(String idCategory){
+
+                Category category=this.categoryRepository.findById(Long.valueOf(idCategory)).orElse(null);
+                if (category != null){
+                        this.categoryRepository.delete(category);
+                        return Boolean.TRUE;
+                }else{
+                        return Boolean.FALSE;
+                }
+
+        }
+        public Boolean removeCategoryByName(String name){
+
+                List<Category> categories=this.categoryRepository.findByName(name);
+                if (!categories.isEmpty()){
+                        Category categoryToRemove = categories.get(0);
+                        this.categoryRepository.delete(categoryToRemove);
+                        return Boolean.TRUE;
+                }else{
+                        return Boolean.FALSE;
+                }
+
+        }
 }
