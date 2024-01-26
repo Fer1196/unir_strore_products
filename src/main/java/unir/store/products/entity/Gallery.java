@@ -10,7 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -49,5 +48,5 @@ public class Gallery {
     private String es_principal;
 
     @Column(name="URL_GALLERY", nullable = false)
-    private Clob url;
+    private String url;
 }
