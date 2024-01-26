@@ -1,7 +1,5 @@
 package unir.store.products.dto;
 
-import java.sql.Clob;
-
 import lombok.Builder;
 import lombok.Data;
 
