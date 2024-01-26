@@ -13,5 +13,6 @@ public interface IGalleryService {
     public List<Gallery> getAllGallery() throws GenericException;
     public GalleryDTO createGallery(GalleryDTO gallery) throws GenericException;
     public Gallery getGalleryById(String idGallery) throws GenericException;
+    public List<GalleryDTO> getGalleryByProduct(String idProduct) throws GenericException;
 
 }

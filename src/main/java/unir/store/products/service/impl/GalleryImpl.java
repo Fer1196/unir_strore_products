@@ -1,5 +1,6 @@
 package unir.store.products.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,5 +57,29 @@ public class GalleryImpl implements IGalleryService{
             throw new GenericException(e.getMessage(), null);
         }
     }
+    
+    @Override
+    public List<GalleryDTO> getGalleryByProduct(String idProduct) throws GenericException {
+        try {
+            Long productId=Long.valueOf(idProduct);
+            Product product = Product.builder()
+                            .idProduct(productId)
+                            .build();
+            List<Gallery> galleryList = this.galleryRepository.findByProduct(product);
+            List<GalleryDTO> resultado = new ArrayList<>();
+            for (Gallery gallery : galleryList) {
+                GalleryDTO galleryDTO = GalleryDTO.builder()
+                                .url(gallery.getUrl())
+                                .es_principal(gallery.getEs_principal())
+                                .idProduct(product.getIdProduct())
+                                .build();
+                resultado.add(galleryDTO);
+            }
+            return resultado;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage(), null);
+        }
+    }
+
     
 }

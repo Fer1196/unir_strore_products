@@ -1,6 +1,5 @@
 package unir.store.products.dto;
 
-import java.util.List;
 import java.util.Locale.Category;
 
 import lombok.Builder;

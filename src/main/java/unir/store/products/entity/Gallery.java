@@ -1,6 +1,5 @@
 package unir.store.products.entity;
 
-import java.sql.Clob;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

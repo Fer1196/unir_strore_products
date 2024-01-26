@@ -35,4 +35,14 @@ public class GalleryController {
         response.setData(this.galleryService.createGallery(request));
         return response;
     }
+
+    @GetMapping(path="/id/{idGallery}")
+    public Gallery getGalleryById(@PathVariable String idGallery) throws GenericException {
+        return this.galleryService.getGalleryById(idGallery);
+    }
+
+    @GetMapping(path="/product/{idProduct}")
+    public List<GalleryDTO> getGalleryByProduct(@PathVariable String idProduct) throws GenericException {
+        return this.galleryService.getGalleryByProduct(idProduct);
+    }
 }
