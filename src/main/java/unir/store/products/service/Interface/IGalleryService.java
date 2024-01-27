@@ -14,5 +14,6 @@ public interface IGalleryService {
     public GalleryDTO createGallery(GalleryDTO gallery) throws GenericException;
     public Gallery getGalleryById(String idGallery) throws GenericException;
     public List<GalleryDTO> getGalleryByProduct(String idProduct) throws GenericException;
-
+    public Boolean removeGalleryById(String idGallery) throws GenericException;
+    public Boolean removeGalleryByProduct(String idProduct) throws GenericException;
 }

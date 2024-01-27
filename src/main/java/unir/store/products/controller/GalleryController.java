@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import unir.store.products.dto.GalleryDTO;
@@ -44,5 +45,25 @@ public class GalleryController {
     @GetMapping(path="/product/{idProduct}")
     public List<GalleryDTO> getGalleryByProduct(@PathVariable String idProduct) throws GenericException {
         return this.galleryService.getGalleryByProduct(idProduct);
+    }
+
+    @DeleteMapping("/id/{idGallery}")
+    public ResponseEntity<Void> removeGalleryById(@PathVariable String idGallery) throws GenericException {
+        Boolean removed = this.galleryService.removeGalleryById(idGallery);
+        if (Boolean.TRUE.equals(removed)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/product/{idProduct}")
+    public ResponseEntity<Void> removeGalleryByProduct(@PathVariable String idProduct) throws GenericException {
+        Boolean removed = this.galleryService.removeGalleryByProduct(idProduct);
+        if (Boolean.TRUE.equals(removed)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

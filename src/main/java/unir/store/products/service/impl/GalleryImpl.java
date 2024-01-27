@@ -72,10 +72,43 @@ public class GalleryImpl implements IGalleryService{
                                 .url(gallery.getUrl())
                                 .es_principal(gallery.getEs_principal())
                                 .idProduct(product.getIdProduct())
+                                .id(gallery.getIdGallery())
                                 .build();
                 resultado.add(galleryDTO);
             }
             return resultado;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public Boolean removeGalleryById(String idGallery) throws GenericException {
+        try {
+            Gallery gallery = this.galleryRepository.findById(Long.valueOf(idGallery)).orElse(null);
+            if (gallery == null) {
+                return Boolean.FALSE;
+            }
+            this.galleryRepository.delete(gallery);
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage(), null);
+        }
+    }
+
+    @Override
+    public Boolean removeGalleryByProduct(String idProduct) throws GenericException {
+        try {
+            Long productId=Long.valueOf(idProduct);
+            Product product = Product.builder()
+                            .idProduct(productId)
+                            .build();
+            List<Gallery> galleryList = this.galleryRepository.findByProduct(product);
+            if (galleryList.isEmpty()) {
+                return Boolean.FALSE;
+            }
+            this.galleryRepository.deleteAll(galleryList);
+            return Boolean.TRUE;
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
