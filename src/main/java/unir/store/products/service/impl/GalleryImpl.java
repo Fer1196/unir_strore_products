@@ -40,6 +40,7 @@ public class GalleryImpl implements IGalleryService{
             gallery = GalleryDTO.builder()
                             .id(galleryEntity.getIdGallery())
                             .url(galleryEntity.getUrl())
+                            .detalle(galleryEntity.getDetalle())
                             .es_principal(galleryEntity.getEs_principal())
                             .idProduct(galleryEntity.getProduct().getIdProduct())
                             .build();
@@ -71,6 +72,7 @@ public class GalleryImpl implements IGalleryService{
             for (Gallery gallery : galleryList) {
                 GalleryDTO galleryDTO = GalleryDTO.builder()
                                 .url(gallery.getUrl())
+                                .detalle(gallery.getDetalle())
                                 .es_principal(gallery.getEs_principal())
                                 .idProduct(product.getIdProduct())
                                 .id(gallery.getIdGallery())

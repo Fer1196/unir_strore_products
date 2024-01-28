@@ -14,74 +14,74 @@ import unir.store.products.exception.GenericException;
 import unir.store.products.repository.ProductRepository;
 import unir.store.products.service.Interface.IGalleryService;
 import unir.store.products.service.Interface.IProductService;
+import unir.store.products.utils.StoreValidators;
 
 @Service
 public class ProductImpl implements IProductService {
     @Autowired
     private ProductRepository productRepository;
     private IGalleryService galleryService;
+    @Autowired
+    StoreValidators storeValidators;
     public ProductImpl(IGalleryService galleryService) {
         this.galleryService = galleryService;
     }
 
-
     @Override
-    public List<Product> getAllProducts() throws GenericException {
-        return this.productRepository.findAll();
+    public List<ProductDTO> getAllProducts() throws GenericException {
+        try {
+            List<ProductDTO> products = new ArrayList<>();
+            List<Product> productsEntity = this.productRepository.findAll();
+            for (Product product : productsEntity) {
+                List<GalleryDTO> listGallery = this.galleryService.getGalleryByProduct(product.getIdProduct().toString());
+                ProductDTO productDTO = storeValidators.formatProductDTO(product, listGallery);
+                products.add(productDTO);
+            }
+            return products;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage(), null);
+        }
     }
 
     @Override
     public ProductDTO createProduct(ProductDTO product) throws GenericException {
-       try {
-            List<GalleryDTO> galleryDTO= new ArrayList<>();
+        try {
+            List<GalleryDTO> listGalleryDTO = new ArrayList<>();
             Category category = Category.builder()
-                            .idCategory(product.getIdCategory())
-                            .build();
+                    .idCategory(product.getIdCategory())
+                    .build();
             Product productEntity = Product.builder()
-                                    .title(product.getTitle())
-                                    .description(product.getDescription())
-                                    .category(category)
-                                    .price(product.getPrice())
-                                    .stock(product.getStock())
-                                    .brand(product.getBrand())
-                                    .thumbnail(product.getThumbnail())
-                                    .build();
+                    .title(product.getTitle())
+                    .description(product.getDescription())
+                    .category(category)
+                    .price(product.getPrice())
+                    .stock(product.getStock())
+                    .brand(product.getBrand())
+                    .thumbnail(product.getThumbnail())
+                    .build();
             this.productRepository.save(productEntity);
-           
+
             for (GalleryDTO gallery : product.getGallery()) {
                 gallery = GalleryDTO.builder()
-                                .detalle(gallery.getDetalle())
-                                .url(gallery.getUrl())
-                                .es_principal(gallery.getEs_principal())
-                                .idProduct(productEntity.getIdProduct())
-                                .build();
-                GalleryDTO respuesta = this.galleryService.createGallery(gallery);
-                galleryDTO.add(respuesta);
+                        .detalle(gallery.getDetalle())
+                        .url(gallery.getUrl())
+                        .es_principal(gallery.getEs_principal())
+                        .idProduct(productEntity.getIdProduct())
+                        .build();
+                GalleryDTO responseGallery = this.galleryService.createGallery(gallery);
+                listGalleryDTO.add(responseGallery);
             }
-
-            product = ProductDTO.builder()
-            .idProduct(productEntity.getIdProduct())
-            .title(productEntity.getTitle())
-            .description(productEntity.getDescription())
-            .idCategory(productEntity.getCategory().getIdCategory())
-            .price(productEntity.getPrice())
-            .stock(productEntity.getStock())
-            .brand(productEntity.getBrand())
-            .thumbnail(productEntity.getThumbnail())
-            .gallery(galleryDTO)
-            .build();
-
+            product = storeValidators.formatProductDTO(productEntity, listGalleryDTO);
             return product;
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
     }
 
-    
     @Override
     public Boolean removeProductById(String idProduct) throws GenericException {
-       try {
-            Long productId=Long.valueOf(idProduct);
+        try {
+            Long productId = Long.valueOf(idProduct);
             this.productRepository.deleteById(productId);
             return true;
         } catch (Exception e) {
@@ -91,9 +91,9 @@ public class ProductImpl implements IProductService {
 
     @Override
     public Boolean removeProductByTitle(String title) throws GenericException {
-       try {
+        try {
             List<Product> products = this.productRepository.findByTitle(title);
-            if(products.size()>0){
+            if (products.size() > 0) {
                 this.productRepository.deleteAll(products);
                 return true;
             }
@@ -105,12 +105,12 @@ public class ProductImpl implements IProductService {
 
     @Override
     public Product getProductById(String idProduct) throws GenericException {
-       try {
-            Long productId=Long.valueOf(idProduct);
+        try {
+            Long productId = Long.valueOf(idProduct);
             return this.productRepository.findById(productId).get();
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
-        }   
+        }
     }
 
     @Override
@@ -133,56 +133,54 @@ public class ProductImpl implements IProductService {
 
         try {
 
-                Long productId=Long.valueOf(productDto.getIdProduct());
-              
-                Product product =  this.productRepository.findById(productId).get();
-                if(product.getStock() ==0){
-                    return null; 
-                }
-                ProductDTO productUpdate = null;
-                this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productDto.getStock());
-           
+            Long productId = Long.valueOf(productDto.getIdProduct());
 
-                return productUpdate; 
-           
+            Product product = this.productRepository.findById(productId).get();
+            if (product.getStock() == 0) {
+                return null;
+            }
+            ProductDTO productUpdate = null;
+            this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productDto.getStock());
+
+            return productUpdate;
+
         } catch (Exception e) {
             throw new UnsupportedOperationException("Unimplemented method 'editStockProduct'");
         }
-    
-    }
 
+    }
 
     @Override
     public List<ProductDTO> editMasiveStockProduct(List<ProductDTO> productDto) throws GenericException {
         try {
             List<ProductDTO> productUpdate = new ArrayList<>();
             for (ProductDTO productItem : productDto) {
-                Long productId=Long.valueOf(productItem.getIdProduct());
-          
-                Product product =  this.productRepository.findById(productId).get();
-                if(product.getStock() ==0){
+                Long productId = Long.valueOf(productItem.getIdProduct());
+
+                Product product = this.productRepository.findById(productId).get();
+                if (product.getStock() == 0) {
                     break;
                 }
                 this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productItem.getStock());
                 Product responseProduct = this.productRepository.findById(productId).get();
                 productItem = ProductDTO.builder()
-                            .idProduct(responseProduct.getIdProduct())
-                            .title(responseProduct.getTitle())
-                            .description(responseProduct.getDescription())
-                            .idCategory(responseProduct.getCategory().getIdCategory())
-                            .price(responseProduct.getPrice())
-                            .stock(responseProduct.getStock())
-                            .brand(responseProduct.getBrand())
-                            .thumbnail(responseProduct.getThumbnail())
-                            .build();
+                        .idProduct(responseProduct.getIdProduct())
+                        .title(responseProduct.getTitle())
+                        .description(responseProduct.getDescription())
+                        .idCategory(responseProduct.getCategory().getIdCategory())
+                        .price(responseProduct.getPrice())
+                        .stock(responseProduct.getStock())
+                        .brand(responseProduct.getBrand())
+                        .thumbnail(responseProduct.getThumbnail())
+                        .build();
                 productUpdate.add(productItem);
             }
-            
-            return productUpdate; 
-       
-    } catch (Exception e) {
-        throw new UnsupportedOperationException("Unimplemented method 'editStockProduct'");
-    }
+
+            return productUpdate;
+
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Unimplemented method 'editStockProduct'");
+        }
 
     }
 }

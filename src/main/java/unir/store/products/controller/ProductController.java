@@ -30,7 +30,7 @@ public class ProductController {
         this.productService = productService;
     }
     @GetMapping
-    public List<Product> getProducts() throws GenericException {
+    public List<ProductDTO> getProducts() throws GenericException {
         return this.productService.getAllProducts();
     }
     @GetMapping("id/{idProduct}")

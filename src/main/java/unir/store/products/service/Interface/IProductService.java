@@ -8,7 +8,7 @@ import unir.store.products.exception.GenericException;
 
 @Service
 public interface IProductService {
-    public List<Product> getAllProducts() throws GenericException;
+    public List<ProductDTO> getAllProducts() throws GenericException;
     public ProductDTO createProduct(ProductDTO product) throws GenericException;
     public Product getProductById(String idProduct) throws GenericException;
     public List<Product> getProductByTitle(String title) throws GenericException;

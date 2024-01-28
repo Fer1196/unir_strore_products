@@ -16,8 +16,6 @@ public interface ICategoryService {
         public CategoryDTO createCategory(CategoryDTO category)  throws GenericException;
         public Optional<Category> getCategoryById(String idCategory) throws GenericException;
         public List<Category> getCategoryByName(String name) throws GenericException;
-
         public Boolean removeCategoryById(String idCategory) throws GenericException;
-
         public Boolean removeCategoryByName(String name) throws GenericException;
 }
