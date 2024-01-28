@@ -24,6 +24,7 @@ public class ProductController {
     @Autowired
     private IProductService productService;
     private GenericBasicResponse<ProductDTO> response;
+    private GenericBasicResponse<List<ProductDTO>> responseList;
 
     public ProductController(IProductService productService) {
         this.productService = productService;
@@ -52,6 +53,12 @@ public class ProductController {
         return response;
     }
     
+    @PutMapping(path = "/updateMasive", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public GenericBasicResponse<List<ProductDTO>> editMasiveProduct(@RequestBody List<ProductDTO> request) throws GenericException {
+        responseList = new GenericBasicResponse<>();
+        responseList.setData(this.productService.editMasiveStockProduct(request));
+        return responseList;
+    }
     
 
 }

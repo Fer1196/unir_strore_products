@@ -150,4 +150,39 @@ public class ProductImpl implements IProductService {
         }
     
     }
+
+
+    @Override
+    public List<ProductDTO> editMasiveStockProduct(List<ProductDTO> productDto) throws GenericException {
+        try {
+            List<ProductDTO> productUpdate = new ArrayList<>();
+            for (ProductDTO productItem : productDto) {
+                Long productId=Long.valueOf(productItem.getIdProduct());
+          
+                Product product =  this.productRepository.findById(productId).get();
+                if(product.getStock() ==0){
+                    break;
+                }
+                this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productItem.getStock());
+                Product responseProduct = this.productRepository.findById(productId).get();
+                productItem = ProductDTO.builder()
+                            .idProduct(responseProduct.getIdProduct())
+                            .title(responseProduct.getTitle())
+                            .description(responseProduct.getDescription())
+                            .idCategory(responseProduct.getCategory().getIdCategory())
+                            .price(responseProduct.getPrice())
+                            .stock(responseProduct.getStock())
+                            .brand(responseProduct.getBrand())
+                            .thumbnail(responseProduct.getThumbnail())
+                            .build();
+                productUpdate.add(productItem);
+            }
+            
+            return productUpdate; 
+       
+    } catch (Exception e) {
+        throw new UnsupportedOperationException("Unimplemented method 'editStockProduct'");
+    }
+
+    }
 }

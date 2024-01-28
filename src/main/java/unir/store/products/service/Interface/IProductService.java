@@ -16,4 +16,5 @@ public interface IProductService {
     public Boolean removeProductById(String idProduct) throws GenericException;
     public Boolean removeProductByTitle(String title) throws GenericException;
     public ProductDTO editStockProduct(ProductDTO productDto)  throws GenericException;
+    public List<ProductDTO> editMasiveStockProduct(List<ProductDTO> productDto)  throws GenericException;
 }
