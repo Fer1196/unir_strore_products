@@ -139,7 +139,8 @@ public class ProductImpl implements IProductService {
                 if(product.getStock() ==0){
                     return null; 
                 }
-                ProductDTO productUpdate = this.productRepository.updateStock(product.getIdProduct(), productDto.getStock() - product.getStock());
+                ProductDTO productUpdate = null;
+                this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productDto.getStock());
            
 
                 return productUpdate; 
