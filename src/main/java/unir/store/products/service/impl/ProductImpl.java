@@ -82,8 +82,13 @@ public class ProductImpl implements IProductService {
     public Boolean removeProductById(String idProduct) throws GenericException {
         try {
             Long productId = Long.valueOf(idProduct);
+            Product product = this.productRepository.findById(productId).get();
+            if (product == null) {
+                return Boolean.FALSE;
+            }
             this.productRepository.deleteById(productId);
-            return true;
+            this.galleryService.removeGalleryByProduct(idProduct);
+            return Boolean.TRUE;
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
@@ -95,9 +100,9 @@ public class ProductImpl implements IProductService {
             List<Product> products = this.productRepository.findByTitle(title);
             if (products.size() > 0) {
                 this.productRepository.deleteAll(products);
-                return true;
+                return Boolean.TRUE;
             }
-            return false;
+            return Boolean.FALSE;
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
         }
