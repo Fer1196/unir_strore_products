@@ -4,11 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import unir.store.products.dto.ProductDTO;
-import unir.store.products.entity.Product;
 import unir.store.products.exception.GenericException;
 import unir.store.products.service.Interface.IProductService;
 import unir.store.products.utils.GenericBasicResponse;
@@ -34,7 +32,7 @@ public class ProductController {
         return this.productService.getAllProducts();
     }
     @GetMapping("id/{idProduct}")
-    public Product getProductById(@RequestParam String idProduct) throws GenericException {
+    public ProductDTO getProductById(@RequestParam String idProduct) throws GenericException {
         return this.productService.getProductById(idProduct);
     }
 
@@ -60,5 +58,9 @@ public class ProductController {
         return responseList;
     }
     
+    @GetMapping(path="/category/{idCategory}")
+    public List<ProductDTO> getProductByCategory(@PathVariable String idCategory) throws GenericException {
+        return this.productService.getProductByCategory(idCategory);
+    }
 
 }

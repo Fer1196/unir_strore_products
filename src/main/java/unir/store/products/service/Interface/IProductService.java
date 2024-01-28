@@ -10,9 +10,9 @@ import unir.store.products.exception.GenericException;
 public interface IProductService {
     public List<ProductDTO> getAllProducts() throws GenericException;
     public ProductDTO createProduct(ProductDTO product) throws GenericException;
-    public Product getProductById(String idProduct) throws GenericException;
+    public ProductDTO getProductById(String idProduct) throws GenericException;
     public List<Product> getProductByTitle(String title) throws GenericException;
-    public List<Product> getProductByCategory(String category) throws GenericException;
+    public List<ProductDTO> getProductByCategory(String category) throws GenericException;
     public Boolean removeProductById(String idProduct) throws GenericException;
     public Boolean removeProductByTitle(String title) throws GenericException;
     public ProductDTO editStockProduct(ProductDTO productDto)  throws GenericException;

@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import unir.store.products.dto.CategoryDTO;
 import unir.store.products.dto.GalleryDTO;
 import unir.store.products.dto.ProductDTO;
-import unir.store.products.entity.Gallery;
 import unir.store.products.entity.Product;
 import unir.store.products.exception.GenericException;
 

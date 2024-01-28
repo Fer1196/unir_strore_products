@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import jakarta.transaction.Transactional;
-import unir.store.products.dto.ProductDTO;
 import unir.store.products.entity.Product;
 import java.util.List;
 
@@ -21,4 +20,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>{
         nativeQuery = true
     )
     public void updateStock(Long idProduct, int quantity);
+
+    @Query (
+        value = "SELECT p.* FROM PRODUCT p WHERE p.id_category =?1 ", 
+        nativeQuery = true
+    )
+    public List<Product> getAllProductsByCategoryId(Long idCategory);
 }
