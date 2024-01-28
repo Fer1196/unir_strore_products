@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import unir.store.products.dto.ProductDTO;
+import unir.store.products.entity.Category;
 import unir.store.products.entity.Product;
 import unir.store.products.exception.GenericException;
 import unir.store.products.repository.ProductRepository;
@@ -23,8 +24,34 @@ public class ProductImpl implements IProductService {
 
     @Override
     public ProductDTO createProduct(ProductDTO product) throws GenericException {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createProduct'");
+       try {
+            Category category = Category.builder()
+                            .idCategory(product.getIdCategory())
+                            .build();
+            Product productEntity = Product.builder()
+                                    .title(product.getTitle())
+                                    .description(product.getDescription())
+                                    .category(category)
+                                    .price(product.getPrice())
+                                    .stock(product.getStock())
+                                    .brand(product.getBrand())
+                                    .thumbnail("hila")
+                                    .build();
+            this.productRepository.save(productEntity);
+            product = ProductDTO.builder()
+                            .idProduct(productEntity.getIdProduct())
+                            .title(productEntity.getTitle())
+                            .description(productEntity.getDescription())
+                            .idCategory(productEntity.getCategory().getIdCategory())
+                            .price(productEntity.getPrice())
+                            .stock(productEntity.getStock())
+                            .brand(productEntity.getBrand())
+                            .thumbnail(productEntity.getThumbnail())
+                            .build();
+            return product;
+        } catch (Exception e) {
+            throw new GenericException(e.getMessage(), null);
+        }
     }
 
     

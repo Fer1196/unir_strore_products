@@ -3,16 +3,15 @@ package unir.store.products.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import unir.store.products.dto.ProductDTO;
 import unir.store.products.entity.Product;
 import unir.store.products.exception.GenericException;
 import unir.store.products.service.Interface.IProductService;
 import unir.store.products.utils.GenericBasicResponse;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -33,6 +32,14 @@ public class ProductController {
     public Product getProductById(@RequestParam String idProduct) throws GenericException {
         return this.productService.getProductById(idProduct);
     }
+
+    @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public GenericBasicResponse<ProductDTO> createProduct(@RequestBody ProductDTO request) throws GenericException {
+        response = new GenericBasicResponse<>();
+        response.setData(this.productService.createProduct(request));
+        return response;
+    }
+    
     
 
 }
