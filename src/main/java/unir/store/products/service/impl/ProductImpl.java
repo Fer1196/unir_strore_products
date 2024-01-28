@@ -127,4 +127,26 @@ public class ProductImpl implements IProductService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProductByCategory'");
     }
+
+    @Override
+    public ProductDTO editStockProduct(ProductDTO productDto) throws GenericException {
+
+        try {
+
+                Long productId=Long.valueOf(productDto.getIdProduct());
+              
+                Product product =  this.productRepository.findById(productId).get();
+                if(product.getStock() ==0){
+                    return null; 
+                }
+                ProductDTO productUpdate = this.productRepository.updateStock(product.getIdProduct(), productDto.getStock() - product.getStock());
+           
+
+                return productUpdate; 
+           
+        } catch (Exception e) {
+            throw new UnsupportedOperationException("Unimplemented method 'editStockProduct'");
+        }
+    
+    }
 }

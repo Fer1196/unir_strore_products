@@ -12,6 +12,10 @@ import unir.store.products.entity.Product;
 import unir.store.products.exception.GenericException;
 import unir.store.products.service.Interface.IProductService;
 import unir.store.products.utils.GenericBasicResponse;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @RestController
@@ -37,6 +41,14 @@ public class ProductController {
     public GenericBasicResponse<ProductDTO> createProduct(@RequestBody ProductDTO request) throws GenericException {
         response = new GenericBasicResponse<>();
         response.setData(this.productService.createProduct(request));
+        return response;
+    }
+
+
+    @PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public GenericBasicResponse<ProductDTO> editProduct(@RequestBody ProductDTO request) throws GenericException {
+        response = new GenericBasicResponse<>();
+        response.setData(this.productService.editStockProduct(request));
         return response;
     }
     

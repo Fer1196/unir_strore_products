@@ -15,4 +15,5 @@ public interface IProductService {
     public List<Product> getProductByCategory(String category) throws GenericException;
     public Boolean removeProductById(String idProduct) throws GenericException;
     public Boolean removeProductByTitle(String title) throws GenericException;
+    public ProductDTO editStockProduct(ProductDTO productDto)  throws GenericException;
 }
