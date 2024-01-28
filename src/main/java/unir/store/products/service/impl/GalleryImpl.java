@@ -38,6 +38,7 @@ public class GalleryImpl implements IGalleryService{
                                     .build();
             this.galleryRepository.save(galleryEntity);
             gallery = GalleryDTO.builder()
+                            .id(galleryEntity.getIdGallery())
                             .url(galleryEntity.getUrl())
                             .es_principal(galleryEntity.getEs_principal())
                             .idProduct(galleryEntity.getProduct().getIdProduct())

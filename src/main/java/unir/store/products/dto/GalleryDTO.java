@@ -1,14 +1,18 @@
 package unir.store.products.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class GalleryDTO {
-    private final Long id;
-    private final Long idProduct;
-    private final String detalle;
-    private final String es_principal;
-    private final String url;
+    private Long id;
+    private Long idProduct;
+    private String detalle;
+    private String es_principal;
+    private String url;
 }

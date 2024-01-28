@@ -1,21 +1,29 @@
 package unir.store.products.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import unir.store.products.dto.ProductDTO;
+import unir.store.products.dto.GalleryDTO;
 import unir.store.products.entity.Category;
 import unir.store.products.entity.Product;
 import unir.store.products.exception.GenericException;
 import unir.store.products.repository.ProductRepository;
+import unir.store.products.service.Interface.IGalleryService;
 import unir.store.products.service.Interface.IProductService;
 
 @Service
 public class ProductImpl implements IProductService {
     @Autowired
     private ProductRepository productRepository;
+    private IGalleryService galleryService;
+    public ProductImpl(IGalleryService galleryService) {
+        this.galleryService = galleryService;
+    }
+
 
     @Override
     public List<Product> getAllProducts() throws GenericException {
@@ -25,6 +33,7 @@ public class ProductImpl implements IProductService {
     @Override
     public ProductDTO createProduct(ProductDTO product) throws GenericException {
        try {
+            List<GalleryDTO> galleryDTO= new ArrayList<>();
             Category category = Category.builder()
                             .idCategory(product.getIdCategory())
                             .build();
@@ -35,19 +44,33 @@ public class ProductImpl implements IProductService {
                                     .price(product.getPrice())
                                     .stock(product.getStock())
                                     .brand(product.getBrand())
-                                    .thumbnail("hila")
+                                    .thumbnail(product.getThumbnail())
                                     .build();
             this.productRepository.save(productEntity);
+           
+            for (GalleryDTO gallery : product.getGallery()) {
+                gallery = GalleryDTO.builder()
+                                .detalle(gallery.getDetalle())
+                                .url(gallery.getUrl())
+                                .es_principal(gallery.getEs_principal())
+                                .idProduct(productEntity.getIdProduct())
+                                .build();
+                GalleryDTO respuesta = this.galleryService.createGallery(gallery);
+                galleryDTO.add(respuesta);
+            }
+
             product = ProductDTO.builder()
-                            .idProduct(productEntity.getIdProduct())
-                            .title(productEntity.getTitle())
-                            .description(productEntity.getDescription())
-                            .idCategory(productEntity.getCategory().getIdCategory())
-                            .price(productEntity.getPrice())
-                            .stock(productEntity.getStock())
-                            .brand(productEntity.getBrand())
-                            .thumbnail(productEntity.getThumbnail())
-                            .build();
+            .idProduct(productEntity.getIdProduct())
+            .title(productEntity.getTitle())
+            .description(productEntity.getDescription())
+            .idCategory(productEntity.getCategory().getIdCategory())
+            .price(productEntity.getPrice())
+            .stock(productEntity.getStock())
+            .brand(productEntity.getBrand())
+            .thumbnail(productEntity.getThumbnail())
+            .gallery(galleryDTO)
+            .build();
+
             return product;
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
@@ -104,13 +127,4 @@ public class ProductImpl implements IProductService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getProductByCategory'");
     }
-
-    // @Override
-    // public List<Product> getProductByCategory(String category) throws GenericException {
-    //    try {
-    //         return this.productRepository.findByCategory(category);
-    //     } catch (Exception e) {
-    //         throw new GenericException(e.getMessage(), null);
-    //     }
-    // }
 }

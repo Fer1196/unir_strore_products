@@ -1,5 +1,6 @@
 package unir.store.products.dto;
 
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 @Data
@@ -15,4 +16,5 @@ public class ProductDTO {
     private final int stock;
     private final String brand;
     private final String thumbnail;
+    private final List<GalleryDTO> gallery;
 }
