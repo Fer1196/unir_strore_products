@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import unir.store.products.dto.ProductDTO;
+import unir.store.products.dto.StatusResponseDTO;
 import unir.store.products.dto.GalleryDTO;
 import unir.store.products.entity.Category;
 import unir.store.products.entity.Product;
@@ -20,6 +21,7 @@ import unir.store.products.utils.StoreValidators;
 public class ProductImpl implements IProductService {
     @Autowired
     private ProductRepository productRepository;
+    @Autowired
     private IGalleryService galleryService;
     @Autowired
     StoreValidators storeValidators;
@@ -87,7 +89,7 @@ public class ProductImpl implements IProductService {
                 return Boolean.FALSE;
             }
             List<GalleryDTO> listGallery = this.galleryService.getGalleryByProduct(product.getIdProduct().toString());
-            if (listGallery != null || listGallery.size() > 0) {
+            if (listGallery != null && listGallery.size() > 0) {
                 this.galleryService.removeGalleryByProduct(idProduct);
             }
             this.productRepository.deleteById(productId);
@@ -150,7 +152,7 @@ public class ProductImpl implements IProductService {
     }
 
     @Override
-    public ProductDTO editStockProduct(ProductDTO productDto) throws GenericException {
+    public StatusResponseDTO editStockProduct(ProductDTO productDto) throws GenericException {
 
         try {
 
@@ -158,12 +160,18 @@ public class ProductImpl implements IProductService {
 
             Product product = this.productRepository.findById(productId).get();
             if (product.getStock() == 0 || product.getStock() < productDto.getStock()) {
-                throw new GenericException("No existen productos en el stock", null);
+                StatusResponseDTO statusResponseDTO = StatusResponseDTO.builder()
+                .status("ERROR")
+                .message("No existe stock del producto con id: " + product.getIdProduct())
+                .build();            
+                return statusResponseDTO;
             }
             
             this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productDto.getStock());
-            ProductDTO responseProductDTO = this.getProductById(productId.toString());
-
+            StatusResponseDTO responseProductDTO = StatusResponseDTO.builder()
+                    .status("OK")
+                    .message("Se actualizo el stock del producto con id: " + product.getIdProduct() + " exitosamente")
+                    .build();
             return responseProductDTO;
 
         } catch (Exception e) {
@@ -173,19 +181,27 @@ public class ProductImpl implements IProductService {
     }
 
     @Override
-    public List<ProductDTO> editMasiveStockProduct(List<ProductDTO> productDto) throws GenericException {
+    public List<StatusResponseDTO> editMasiveStockProduct(List<ProductDTO> productDto) throws GenericException {
         try {
-            List<ProductDTO> productUpdate = new ArrayList<>();
+            List<StatusResponseDTO> productUpdate = new ArrayList<>();
             for (ProductDTO productItem : productDto) {
                 Long productId = Long.valueOf(productItem.getIdProduct());
 
                 Product product = this.productRepository.findById(productId).get();
                 if (product.getStock() == 0 || product.getStock() < productItem.getStock()){
-                    break;
+                    StatusResponseDTO statusResponseDTO = StatusResponseDTO.builder()
+                            .status("ERROR")
+                            .message("No existe stock del producto con id: " + product.getIdProduct())
+                            .build();
+                    productUpdate.add(statusResponseDTO);
+                    continue;
                 }
                 this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productItem.getStock());
-                ProductDTO responseProductDTO = this.getProductById(productId.toString());
-                productUpdate.add(responseProductDTO);
+                StatusResponseDTO statusResponseDTO = StatusResponseDTO.builder()
+                        .status("OK")
+                        .message("Se actualizo el stock del producto con id: " + product.getIdProduct() + " exitosamente")
+                        .build();
+                productUpdate.add(statusResponseDTO);
             }
 
             return productUpdate;

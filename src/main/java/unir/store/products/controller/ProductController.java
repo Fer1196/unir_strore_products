@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import unir.store.products.dto.ProductDTO;
+import unir.store.products.dto.StatusResponseDTO;
 import unir.store.products.exception.GenericException;
 import unir.store.products.service.Interface.IProductService;
 import unir.store.products.utils.GenericBasicResponse;
@@ -23,7 +24,8 @@ public class ProductController {
     @Autowired
     private IProductService productService;
     private GenericBasicResponse<ProductDTO> response;
-    private GenericBasicResponse<List<ProductDTO>> responseList;
+    private GenericBasicResponse<List<StatusResponseDTO>> responseList;
+    private GenericBasicResponse<StatusResponseDTO> responseUpdate;
 
     public ProductController(IProductService productService) {
         this.productService = productService;
@@ -46,14 +48,14 @@ public class ProductController {
 
 
     @PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public GenericBasicResponse<ProductDTO> editProduct(@RequestBody ProductDTO request) throws GenericException {
-        response = new GenericBasicResponse<>();
-        response.setData(this.productService.editStockProduct(request));
-        return response;
+    public GenericBasicResponse<StatusResponseDTO> editProduct(@RequestBody ProductDTO request) throws GenericException {
+        responseUpdate = new GenericBasicResponse<>();
+        responseUpdate.setData(this.productService.editStockProduct(request));
+        return responseUpdate;
     }
     
     @PutMapping(path = "/updateMasive", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public GenericBasicResponse<List<ProductDTO>> editMasiveProduct(@RequestBody List<ProductDTO> request) throws GenericException {
+    public GenericBasicResponse<List<StatusResponseDTO>> editMasiveProduct(@RequestBody List<ProductDTO> request) throws GenericException {
         responseList = new GenericBasicResponse<>();
         responseList.setData(this.productService.editMasiveStockProduct(request));
         return responseList;
