@@ -12,7 +12,6 @@ import unir.store.products.dto.StatusResponseDTO;
 import unir.store.products.exception.GenericException;
 import unir.store.products.service.Interface.IProductService;
 import unir.store.products.utils.GenericBasicResponse;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -47,14 +46,14 @@ public class ProductController {
     }
 
 
-    @PutMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public GenericBasicResponse<StatusResponseDTO> editProduct(@RequestBody ProductDTO request) throws GenericException {
         responseUpdate = new GenericBasicResponse<>();
         responseUpdate.setData(this.productService.editStockProduct(request));
         return responseUpdate;
     }
     
-    @PutMapping(path = "/updateMasive", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(path = "/updateMasive", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public GenericBasicResponse<List<StatusResponseDTO>> editMasiveProduct(@RequestBody List<ProductDTO> request) throws GenericException {
         responseList = new GenericBasicResponse<>();
         responseList.setData(this.productService.editMasiveStockProduct(request));
