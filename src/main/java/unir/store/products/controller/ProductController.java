@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import unir.store.products.dto.ProductDTO;
@@ -61,6 +62,16 @@ public class ProductController {
     @GetMapping(path="/category/{idCategory}")
     public List<ProductDTO> getProductByCategory(@PathVariable String idCategory) throws GenericException {
         return this.productService.getProductByCategory(idCategory);
+    }
+
+    @DeleteMapping("/id/{idProduct}")
+    public ResponseEntity<Void> removeProductById(@PathVariable String idProduct) throws GenericException {
+        Boolean removed = this.productService.removeProductById(idProduct);
+        if (Boolean.TRUE.equals(removed)) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }

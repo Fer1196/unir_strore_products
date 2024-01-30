@@ -86,8 +86,11 @@ public class ProductImpl implements IProductService {
             if (product == null) {
                 return Boolean.FALSE;
             }
+            List<GalleryDTO> listGallery = this.galleryService.getGalleryByProduct(product.getIdProduct().toString());
+            if (listGallery != null || listGallery.size() > 0) {
+                this.galleryService.removeGalleryByProduct(idProduct);
+            }
             this.productRepository.deleteById(productId);
-            this.galleryService.removeGalleryByProduct(idProduct);
             return Boolean.TRUE;
         } catch (Exception e) {
             throw new GenericException(e.getMessage(), null);
@@ -154,8 +157,8 @@ public class ProductImpl implements IProductService {
             Long productId = Long.valueOf(productDto.getIdProduct());
 
             Product product = this.productRepository.findById(productId).get();
-            if (product.getStock() == 0) {
-                return null;
+            if (product.getStock() == 0 || product.getStock() < productDto.getStock()) {
+                throw new GenericException("No existen productos en el stock", null);
             }
             
             this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productDto.getStock());
@@ -177,7 +180,7 @@ public class ProductImpl implements IProductService {
                 Long productId = Long.valueOf(productItem.getIdProduct());
 
                 Product product = this.productRepository.findById(productId).get();
-                if (product.getStock() == 0) {
+                if (product.getStock() == 0 || product.getStock() < productItem.getStock()){
                     break;
                 }
                 this.productRepository.updateStock(product.getIdProduct(), product.getStock() - productItem.getStock());
